@@ -12,3 +12,7 @@ storybook-static
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# Examples
+/out
+.react-email
