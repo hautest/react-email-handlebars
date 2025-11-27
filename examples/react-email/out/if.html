@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" lang="en">
+  <head></head>
+  <body>
+    <!--$--><!--html--><!--body-->
+    <table
+      border="0"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      role="presentation"
+      align="center"
+    >
+      <tbody>
+        <tr>
+          <td>
+            {{#if if-key}}
+            <p
+              style="
+                font-size: 14px;
+                line-height: 24px;
+                margin-top: 16px;
+                margin-bottom: 16px;
+              "
+            >
+              You are an admin
+            </p>
+            {{else}}
+            <p
+              style="
+                font-size: 14px;
+                line-height: 24px;
+                margin-top: 16px;
+                margin-bottom: 16px;
+              "
+            >
+              You are not an admin
+            </p>
+            {{/if}}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!--/$-->
+  </body>
+</html>
