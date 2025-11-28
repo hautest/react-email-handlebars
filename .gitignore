@@ -16,3 +16,4 @@ storybook-static
 # Examples
 /out
 .react-email
+.rendered
