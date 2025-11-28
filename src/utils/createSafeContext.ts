@@ -1,37 +1,40 @@
-import * as React from "react";
-
-// jsx-email compatibility: try to import jsx-email's context if available
-let jsxEmailContext: any;
-try {
-  // @ts-ignore - optional import
-  jsxEmailContext = require("jsx-email");
-} catch {
-  // jsx-email not available, use standard React
-}
-
-function createContextCompat<T>(defaultValue: T) {
-  if (jsxEmailContext?.createContext) {
-    return jsxEmailContext.createContext(defaultValue);
-  }
-  return React.createContext(defaultValue);
-}
-
-function useContextCompat<T>(context: React.Context<T>) {
-  if (jsxEmailContext?.useContext) {
-    return jsxEmailContext.useContext(context);
-  }
-  return React.useContext(context);
-}
+import type { Context } from "react";
+import { createRequire } from "module";
 
 export function createSafeContext<T>(contextName: string) {
-  const context = createContextCompat<T | null>(null);
+  let createContextFn: <TValue>(defaultValue: TValue) => Context<TValue>;
+  let useContextFn: <TValue>(context: Context<TValue>) => TValue;
 
-  const useSafeContext = (consumerName: string) => {
-    const value = useContextCompat(context);
+  try {
+    const req = createRequire(import.meta.url);
+    const jsxEmail = req("jsx-email");
+
+    if (jsxEmail?.createContext && jsxEmail?.useContext) {
+      createContextFn = jsxEmail.createContext;
+      useContextFn = jsxEmail.useContext;
+    }
+  } catch {
+    // jsx-email not found
+  }
+
+  if (!createContextFn!) {
+    // @ts-ignore
+    const { createRequire } = require("module");
+    const req = createRequire(import.meta.url);
+    const React = req("react");
+    createContextFn = React.createContext;
+    useContextFn = React.useContext;
+  }
+
+  const context = createContextFn<T | null>(null);
+
+  const useSafeContext = (consumerName: string): T => {
+    const value = useContextFn(context);
     if (value === null) {
       throw new Error(`${consumerName} must be used within ${contextName}`);
     }
     return value;
   };
+
   return [context.Provider, useSafeContext] as const;
 }
