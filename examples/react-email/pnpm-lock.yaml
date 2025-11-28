@@ -1047,12 +1047,8 @@ packages:
   react-email-handlebars@file:../..:
     resolution: {directory: ../.., type: directory}
     peerDependencies:
-      jsx-email: '>=2.0.0'
       react: '>=19.0.0'
       react-dom: '>=19.0.0'
-    peerDependenciesMeta:
-      jsx-email:
-        optional: true
 
   react-email@5.0.5:
     resolution: {integrity: sha512-O0BCyg2zR/3CsEYqoeDQuJL6W8oHYSPmvzIeSbFa5XXdtofmgizCLThbs50lcP7wGCTkDvdJIZ6XWUt2aRU6zA==}

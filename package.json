@@ -36,11 +36,6 @@
     "react": ">=19.0.0",
     "react-dom": ">=19.0.0"
   },
-  "peerDependenciesMeta": {
-    "jsx-email": {
-      "optional": true
-    }
-  },
   "private": true,
   "dependencies": {
     "zod": "^4.1.13"

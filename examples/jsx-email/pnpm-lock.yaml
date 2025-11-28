@@ -13,7 +13,7 @@ importers:
         version: 2.8.1(@jsx-email/plugin-inline@1.0.1)(@jsx-email/plugin-minify@1.0.2)(@jsx-email/plugin-pretty@1.0.0)(@types/node@24.10.1)(@types/react@19.2.7)(jiti@1.21.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(yaml@2.8.1)
       react-email-handlebars:
         specifier: file:../..
-        version: file:../..(jsx-email@2.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: file:../..(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
     devDependencies:
       '@types/node':
         specifier: ^24.10.1
@@ -2149,12 +2149,8 @@ packages:
   react-email-handlebars@file:../..:
     resolution: {directory: ../.., type: directory}
     peerDependencies:
-      jsx-email: '>=2.0.0'
       react: '>=19.0.0'
       react-dom: '>=19.0.0'
-    peerDependenciesMeta:
-      jsx-email:
-        optional: true
 
   react-refresh@0.18.0:
     resolution: {integrity: sha512-QgT5//D3jfjJb6Gsjxv0Slpj23ip+HtOpnNgnb2S5zU3CB26G/IDPGoy4RJB42wzFE46DRsstbW6tKHoKbhAxw==}
@@ -4592,13 +4588,11 @@ snapshots:
       react: 19.2.0
       scheduler: 0.27.0
 
-  react-email-handlebars@file:../..(jsx-email@2.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-email-handlebars@file:../..(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
       zod: 4.1.13
-    optionalDependencies:
-      jsx-email: 2.8.1(@jsx-email/plugin-inline@1.0.1)(@jsx-email/plugin-minify@1.0.2)(@jsx-email/plugin-pretty@1.0.0)(@types/node@24.10.1)(@types/react@19.2.7)(jiti@1.21.7)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)(yaml@2.8.1)
 
   react-refresh@0.18.0: {}
 

@@ -1,10 +1,11 @@
-import type { Context } from "react";
+import { createContext, useContext, type Context } from "react";
 import { createRequire } from "module";
 
 export function createSafeContext<T>(contextName: string) {
-  let createContextFn: <TValue>(defaultValue: TValue) => Context<TValue>;
-  let useContextFn: <TValue>(context: Context<TValue>) => TValue;
+  let createContextFn: <TValue>(defaultValue: TValue) => Context<TValue> = createContext;
+  let useContextFn: <TValue>(context: Context<TValue>) => TValue = useContext;
 
+  // Try to use jsx-email's context functions if available
   try {
     const req = createRequire(import.meta.url);
     const jsxEmail = req("jsx-email");
@@ -14,16 +15,7 @@ export function createSafeContext<T>(contextName: string) {
       useContextFn = jsxEmail.useContext;
     }
   } catch {
-    // jsx-email not found
-  }
-
-  if (!createContextFn!) {
-    // @ts-ignore
-    const { createRequire } = require("module");
-    const req = createRequire(import.meta.url);
-    const React = req("react");
-    createContextFn = React.createContext;
-    useContextFn = React.useContext;
+    // jsx-email not found, use React's context (already set as default)
   }
 
   const context = createContextFn<T | null>(null);

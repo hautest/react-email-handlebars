@@ -8,7 +8,7 @@ export default function IfExample() {
         <Body>
           <If
             conditionPath="if-key"
-            previewCondition={true}
+            previewCondition={false}
             then={<Text>You are an admin</Text>}
             else={<Text>You are not an admin</Text>}
           />
