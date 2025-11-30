@@ -11,7 +11,7 @@ export const Template = () => (
       <Body>
         <If
           conditionPath="if-key"
-          previewCondition={false}
+          previewCondition={true}
           then={<Text style={{ color: "red" }}>You are an admin</Text>}
           else={<Text style={{ color: "blue" }}>You are not an admin</Text>}
         />
