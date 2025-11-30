@@ -20,6 +20,9 @@ importers:
       react-email-handlebars:
         specifier: file:../..
         version: file:../..(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      zod:
+        specifier: ^4.1.13
+        version: 4.1.13
     devDependencies:
       '@react-email/preview-server':
         specifier: 5.0.5

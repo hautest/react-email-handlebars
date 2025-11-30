@@ -3,7 +3,7 @@ import { If, RuntimeProvider } from "react-email-handlebars";
 
 export default function IfExample() {
   return (
-    <RuntimeProvider value="preview">
+    <RuntimeProvider value="build">
       <Html>
         <Body>
           <If
