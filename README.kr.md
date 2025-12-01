@@ -12,7 +12,7 @@ React 기반 이메일 템플릿과 Handlebars 템플릿을 연결하는 라이�
 - **타입 안전성**: Zod 스키마 검증을 통한 완전한 TypeScript 지원
 - **미리보기 모드**: 개발 중 샘플 데이터로 이메일 미리보기
 - **빌드 모드**: 프로덕션용 Handlebars 템플릿 생성
-- **조건부 렌더링**: 조건부 콘텐츠를 위한 `If` 컴포넌트
+- **조건부 렌더링**: 조건부 콘텐츠를 위한 `If` 및 `Unless` 컴포넌트
 - **리스트 렌더링**: 데이터 배열 반복을 위한 `Each` 컴포넌트
 
 ## 설치
@@ -112,6 +112,73 @@ export const Template = () => (
 {{else}}
   프리미엄으로 업그레이드하세요
 {{/if}}
+```
+
+### Unless 컴포넌트
+
+`If` 컴포넌트의 반대입니다. 조건이 거짓일 때 콘텐츠를 렌더링합니다.
+
+#### React Email 예제
+
+```tsx
+import { Body, Html, Text } from "@react-email/components";
+import { Unless, RuntimeProvider } from "react-email-handlebars";
+
+export default function PaymentReminderEmail() {
+  return (
+    <RuntimeProvider value="build">
+      <Html>
+        <Body>
+          <Unless
+            conditionPath="user.hasPaid"
+            previewCondition={false}
+            then={<Text>서비스를 계속 이용하시려면 결제해 주세요.</Text>}
+            else={<Text>결제해 주셔서 감사합니다!</Text>}
+          />
+        </Body>
+      </Html>
+    </RuntimeProvider>
+  );
+}
+```
+
+**생성된 Handlebars 템플릿:**
+
+```handlebars
+{{#unless user.hasPaid}}
+  서비스를 계속 이용하시려면 결제해 주세요.
+{{else}}
+  결제해 주셔서 감사합니다!
+{{/unless}}
+```
+
+#### JSX Email 예제
+
+```tsx
+import { Body, Html, Text } from "jsx-email";
+import { Unless, RuntimeProvider } from "react-email-handlebars";
+
+export const Template = () => (
+  <RuntimeProvider value="preview">
+    <Html>
+      <Body>
+        <Unless
+          conditionPath="user.isVerified"
+          previewCondition={false}
+          then={<Text>이메일 주소를 인증해 주세요.</Text>}
+        />
+      </Body>
+    </Html>
+  </RuntimeProvider>
+);
+```
+
+**생성된 Handlebars 템플릿:**
+
+```handlebars
+{{#unless user.isVerified}}
+  이메일 주소를 인증해 주세요.
+{{/unless}}
 ```
 
 ### Each 컴포넌트
@@ -223,6 +290,47 @@ export const Template = () => {
 {{/each}}
 ```
 
+#### 중첩 객체 지원
+
+`Each` 컴포넌트는 Zod 스키마의 중첩 객체를 지원합니다. 표준 점 표기법이나 객체 구조 분해를 사용하여 깊은 속성에 접근할 수 있습니다.
+
+```tsx
+const UserSchema = z.object({
+  id: z.string(),
+  info: z.object({
+    name: z.string(),
+    contact: z.object({
+      email: z.string(),
+    }),
+  }),
+});
+
+// ...
+
+<Each
+  each="users"
+  schema={UserSchema}
+  previewData={previewUsers}
+  renderItem={(user) => (
+    <Text>
+      {user.info.name} - {user.info.contact.email}
+    </Text>
+  )}
+/>;
+```
+
+**생성된 Handlebars 템플릿:**
+
+```handlebars
+{{#each users}}
+  <p>
+    {{info.name}}
+    -
+    {{info.contact.email}}
+  </p>
+{{/each}}
+```
+
 ## API 레퍼런스
 
 ### `RuntimeProvider`
@@ -239,6 +347,15 @@ export const Template = () => {
 - `previewCondition`: `boolean` - 미리보기 모드의 조건 값
 - `then`: `ReactNode` - 조건이 참일 때 렌더링할 콘텐츠
 - `else?`: `ReactNode` - 조건이 거짓일 때 렌더링할 선택적 콘텐츠
+
+### `Unless`
+
+**Props:**
+
+- `conditionPath`: `string` - 조건에 대한 Handlebars 경로
+- `previewCondition`: `boolean` - 미리보기 모드의 조건 값
+- `then`: `ReactNode` - 조건이 거짓일 때 렌더링할 콘텐츠
+- `else?`: `ReactNode` - 조건이 참일 때 렌더링할 선택적 콘텐츠
 
 ### `Each`
 
@@ -288,6 +405,20 @@ cd examples/jsx-email
 pnpm install
 pnpm run dev
 ```
+
+## 테스트
+
+이 라이브러리는 테스트를 위해 `@rstest/core`를 사용합니다. 모든 컴포넌트에 대해 미리보기 모드와 빌드 모드를 모두 테스트합니다.
+
+```bash
+pnpm test
+```
+
+### 테스트 구조
+
+- `tests/If.test.tsx`: 조건부 렌더링 로직과 Handlebars 구문 생성을 검증합니다.
+- `tests/Unless.test.tsx`: 반대 조건부 로직과 Handlebars 구문 생성을 검증합니다.
+- `tests/Each.test.tsx`: 리스트 반복, 빈 상태, 스키마 검증을 확인합니다.
 
 ## 작동 원리
 

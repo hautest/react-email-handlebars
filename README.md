@@ -12,7 +12,7 @@ A library that bridges the gap between React-based email templates and Handlebar
 - **Type-Safe**: Full TypeScript support with Zod schema validation
 - **Preview Mode**: Preview your emails with sample data during development
 - **Build Mode**: Generate Handlebars templates for production use
-- **Conditional Rendering**: `If` component for conditional content
+- **Conditional Rendering**: `If` and `Unless` components for conditional content
 - **List Rendering**: `Each` component for iterating over data arrays
 
 ## Installation
@@ -112,6 +112,75 @@ export const Template = () => (
 {{else}}
   Upgrade to Premium
 {{/if}}
+```
+
+### Unless Component
+
+Inverse of `If` component. Renders content when a condition is falsy.
+
+#### React Email Example
+
+```tsx
+import { Body, Html, Text } from "@react-email/components";
+import { Unless, RuntimeProvider } from "react-email-handlebars";
+
+export default function PaymentReminderEmail() {
+  return (
+    <RuntimeProvider value="build">
+      <Html>
+        <Body>
+          <Unless
+            conditionPath="user.hasPaid"
+            previewCondition={false}
+            then={
+              <Text>Please make a payment to continue using our services.</Text>
+            }
+            else={<Text>Thank you for your payment!</Text>}
+          />
+        </Body>
+      </Html>
+    </RuntimeProvider>
+  );
+}
+```
+
+**Generated Handlebars Template:**
+
+```handlebars
+{{#unless user.hasPaid}}
+  Please make a payment to continue using our services.
+{{else}}
+  Thank you for your payment!
+{{/unless}}
+```
+
+#### JSX Email Example
+
+```tsx
+import { Body, Html, Text } from "jsx-email";
+import { Unless, RuntimeProvider } from "react-email-handlebars";
+
+export const Template = () => (
+  <RuntimeProvider value="preview">
+    <Html>
+      <Body>
+        <Unless
+          conditionPath="user.isVerified"
+          previewCondition={false}
+          then={<Text>Please verify your email address.</Text>}
+        />
+      </Body>
+    </Html>
+  </RuntimeProvider>
+);
+```
+
+**Generated Handlebars Template:**
+
+```handlebars
+{{#unless user.isVerified}}
+  Please verify your email address.
+{{/unless}}
 ```
 
 ### Each Component
@@ -223,6 +292,47 @@ export const Template = () => {
 {{/each}}
 ```
 
+#### Nested Object Support
+
+The `Each` component supports nested objects in Zod schemas. You can access deep properties using standard dot notation or object destructuring.
+
+```tsx
+const UserSchema = z.object({
+  id: z.string(),
+  info: z.object({
+    name: z.string(),
+    contact: z.object({
+      email: z.string(),
+    }),
+  }),
+});
+
+// ...
+
+<Each
+  each="users"
+  schema={UserSchema}
+  previewData={previewUsers}
+  renderItem={(user) => (
+    <Text>
+      {user.info.name} - {user.info.contact.email}
+    </Text>
+  )}
+/>;
+```
+
+**Generated Handlebars Template:**
+
+```handlebars
+{{#each users}}
+  <p>
+    {{info.name}}
+    -
+    {{info.contact.email}}
+  </p>
+{{/each}}
+```
+
 ## API Reference
 
 ### `RuntimeProvider`
@@ -239,6 +349,15 @@ export const Template = () => {
 - `previewCondition`: `boolean` - Condition value for preview mode
 - `then`: `ReactNode` - Content to render when condition is true
 - `else?`: `ReactNode` - Optional content to render when condition is false
+
+### `Unless`
+
+**Props:**
+
+- `conditionPath`: `string` - Handlebars path for the condition
+- `previewCondition`: `boolean` - Condition value for preview mode
+- `then`: `ReactNode` - Content to render when condition is false
+- `else?`: `ReactNode` - Optional content to render when condition is true
 
 ### `Each`
 
@@ -288,6 +407,20 @@ cd examples/jsx-email
 pnpm install
 pnpm run dev
 ```
+
+## Testing
+
+This library uses `@rstest/core` for testing. Tests cover both preview and build modes for all components.
+
+```bash
+pnpm test
+```
+
+### Test Structure
+
+- `tests/If.test.tsx`: Verifies conditional rendering logic and Handlebars syntax generation.
+- `tests/Unless.test.tsx`: Verifies inverse conditional logic and Handlebars syntax generation.
+- `tests/Each.test.tsx`: Verifies list iteration, empty states, and schema validation.
 
 ## How It Works
 
