@@ -1,6 +1,25 @@
 {
   "name": "react-email-handlebars",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "description": "Handlebars template support for React Email and JSX Email. Write templates once in React, generate Handlebars for dynamic rendering.",
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hautest/react-email-handlebars"
+  },
+  "keywords": [
+    "react",
+    "email",
+    "handlebars",
+    "jsx-email",
+    "react-email"
+  ],
+  "homepage": "https://github.com/hautest/react-email-handlebars",
+  "bugs": {
+    "url": "https://github.com/hautest/react-email-handlebars/issues"
+  },
+  "license": "MIT",
+  "author": "dos07008@naver.com",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

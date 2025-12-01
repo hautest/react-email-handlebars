@@ -25,12 +25,14 @@ pnpm add react-email-handlebars zod
 yarn add react-email-handlebars zod
 ```
 
+> **참고:** `Each` 컴포넌트에서 스키마 검증을 위해 `zod` 설치가 필요합니다.
+
 ### Peer Dependencies
 
 이 라이브러리는 React 19 이상이 필요합니다:
 
 ```bash
-npm install react@^19.0.0 react-dom@^19.0.0
+react@^19.0.0 react-dom@^19.0.0
 ```
 
 ## 사용법
@@ -100,6 +102,16 @@ export const Template = () => (
     </Html>
   </RuntimeProvider>
 );
+```
+
+**생성된 Handlebars 템플릿:**
+
+```handlebars
+{{#if user.isPremium}}
+  프리미엄 기능이 활성화되었습니다!
+{{else}}
+  프리미엄으로 업그레이드하세요
+{{/if}}
 ```
 
 ### Each 컴포넌트
@@ -201,16 +213,28 @@ export const Template = () => {
 };
 ```
 
+**생성된 Handlebars 템플릿:**
+
+```handlebars
+{{#each products}}
+  <p>
+    {{name}}: ${{price}}
+  </p>
+{{/each}}
+```
+
 ## API 레퍼런스
 
 ### `RuntimeProvider`
 
 **Props:**
+
 - `value`: `"preview" | "build"` - 런타임 모드
 
 ### `If`
 
 **Props:**
+
 - `conditionPath`: `string` - 조건에 대한 Handlebars 경로
 - `previewCondition`: `boolean` - 미리보기 모드의 조건 값
 - `then`: `ReactNode` - 조건이 참일 때 렌더링할 콘텐츠
@@ -219,6 +243,7 @@ export const Template = () => {
 ### `Each`
 
 **Props:**
+
 - `previewData`: `TItem[]` - 미리보기 모드용 아이템 배열
 - `each`: `string` - 배열에 대한 Handlebars 경로
 - `schema`: `z.ZodSchema<TItem>` - 아이템 구조를 정의하는 Zod 스키마
@@ -269,6 +294,7 @@ pnpm run dev
 라이브러리는 두 가지 런타임 모드를 제공합니다:
 
 1. **미리보기 모드** (`runtime="preview"`):
+
    - 제공된 `previewData`와 `previewCondition` 사용
    - 실제 React 컴포넌트 렌더링
    - 개발 및 테스트에 적합

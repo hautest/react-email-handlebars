@@ -25,6 +25,8 @@ pnpm add react-email-handlebars zod
 yarn add react-email-handlebars zod
 ```
 
+> **Note:** `zod` is required when using the `Each` component for schema validation.
+
 ### Peer Dependencies
 
 This library requires React 19 or higher:
@@ -100,6 +102,16 @@ export const Template = () => (
     </Html>
   </RuntimeProvider>
 );
+```
+
+**Generated Handlebars Template:**
+
+```handlebars
+{{#if user.isPremium}}
+  Premium Features Unlocked!
+{{else}}
+  Upgrade to Premium
+{{/if}}
 ```
 
 ### Each Component
@@ -201,16 +213,28 @@ export const Template = () => {
 };
 ```
 
+**Generated Handlebars Template:**
+
+```handlebars
+{{#each products}}
+  <p>
+    {{name}}: ${{price}}
+  </p>
+{{/each}}
+```
+
 ## API Reference
 
 ### `RuntimeProvider`
 
 **Props:**
+
 - `value`: `"preview" | "build"` - Runtime mode
 
 ### `If`
 
 **Props:**
+
 - `conditionPath`: `string` - Handlebars path for the condition
 - `previewCondition`: `boolean` - Condition value for preview mode
 - `then`: `ReactNode` - Content to render when condition is true
@@ -219,6 +243,7 @@ export const Template = () => {
 ### `Each`
 
 **Props:**
+
 - `previewData`: `TItem[]` - Array of items for preview mode
 - `each`: `string` - Handlebars path for the array
 - `schema`: `z.ZodSchema<TItem>` - Zod schema defining item structure
@@ -269,6 +294,7 @@ pnpm run dev
 The library provides two runtime modes:
 
 1. **Preview Mode** (`runtime="preview"`):
+
    - Uses the provided `previewData` and `previewCondition`
    - Renders actual React components
    - Perfect for development and testing
