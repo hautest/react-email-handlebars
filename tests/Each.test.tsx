@@ -85,7 +85,7 @@ describe("Each Component", () => {
             schema={NestedSchema}
             previewData={mockNestedItems}
             renderItem={(item) => (
-              <div>
+              <div key={item.id}>
                 {item.info.name} - {item.info.contact.email}
               </div>
             )}

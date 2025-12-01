@@ -27,7 +27,7 @@ export default function EachExample() {
               each="users"
               schema={itemSchema}
               renderItem={(item) => (
-                <div>
+                <div key={item.email}>
                   <Text>
                     Name: {item.name}, Email: {item.email}
                   </Text>

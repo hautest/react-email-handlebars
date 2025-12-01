@@ -31,7 +31,7 @@ export const Template = () => {
               each="users"
               schema={itemSchema}
               renderItem={(item) => (
-                <div>
+                <div key={item.email}>
                   <Text style={{ color: "green" }}>
                     Name: {item.name}, Email: {item.email}
                   </Text>

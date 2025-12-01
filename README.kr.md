@@ -216,7 +216,7 @@ export default function UserListEmail() {
               each="users"
               schema={userSchema}
               renderItem={(user) => (
-                <div>
+                <div key={user.email}>
                   <Text>이름: {user.name}</Text>
                   <Text>이메일: {user.email}</Text>
                 </div>
@@ -268,7 +268,7 @@ export const Template = () => {
             each="products"
             schema={productSchema}
             renderItem={(product) => (
-              <Text>
+              <Text key={product.name}>
                 {product.name}: ${product.price}
               </Text>
             )}
@@ -312,7 +312,7 @@ const UserSchema = z.object({
   schema={UserSchema}
   previewData={previewUsers}
   renderItem={(user) => (
-    <Text>
+    <Text key={user.id}>
       {user.info.name} - {user.info.contact.email}
     </Text>
   )}
