@@ -9,14 +9,14 @@ export interface UnlessProps {
   /**
    * Content to render if the condition is false (the main block of #unless).
    */
-  children: ReactNode;
+  then: ReactNode;
   /**
    * Content to render if the condition is true (the {{else}} block).
    */
   else?: ReactNode;
   /**
    * The boolean value to simulate the condition in preview mode.
-   * Note: If this is true, the `else` block is rendered. If false, `children` are rendered.
+   * Note: If this is true, the `else` block is rendered. If false, `then` is rendered.
    */
   previewCondition: boolean;
 }
@@ -33,10 +33,9 @@ export interface UnlessProps {
  * <Unless
  *   conditionPath="user.isVerified"
  *   previewCondition={false}
+ *   then={<div>Please verify your email.</div>}
  *   else={<div>Thanks for verifying!</div>}
- * >
- *   <div>Please verify your email.</div>
- * </Unless>
+ * />
  * ```
  */
 export function Unless(props: UnlessProps) {
@@ -46,7 +45,7 @@ export function Unless(props: UnlessProps) {
     return (
       <>
         {`{{#unless ${props.conditionPath}}}`}
-        {props.children}
+        {props.then}
         {props.else && "{{else}}"}
         {props.else}
         {`{{/unless}}`}
@@ -54,5 +53,5 @@ export function Unless(props: UnlessProps) {
     );
   }
 
-  return <>{props.previewCondition ? props.else : props.children}</>;
+  return <>{props.previewCondition ? props.else : props.then}</>;
 }

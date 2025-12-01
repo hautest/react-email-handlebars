@@ -5,16 +5,36 @@ import { RuntimeProvider } from "../src/contexts/useRuntime";
 
 describe("Unless Component", () => {
   describe("Preview Mode", () => {
-    it("renders children when previewCondition is false", () => {
+    it("renders 'then' content when previewCondition is false", () => {
       render(
         <RuntimeProvider value="preview">
-          <Unless conditionPath="user.isSubscribed" previewCondition={false}>
-            <div>Subscribe now!</div>
-          </Unless>
+          <Unless
+            conditionPath="user.isSubscribed"
+            previewCondition={false}
+            then={<div>Subscribe now!</div>}
+          />
         </RuntimeProvider>
       );
 
       expect(screen.getByText("Subscribe now!")).toBeInTheDocument();
+    });
+
+    it("renders 'then' content (not else) when previewCondition is false with else provided", () => {
+      render(
+        <RuntimeProvider value="preview">
+          <Unless
+            conditionPath="user.isSubscribed"
+            previewCondition={false}
+            then={<div>Subscribe now!</div>}
+            else={<div>Thank you for subscribing!</div>}
+          />
+        </RuntimeProvider>
+      );
+
+      expect(screen.getByText("Subscribe now!")).toBeInTheDocument();
+      expect(
+        screen.queryByText("Thank you for subscribing!")
+      ).not.toBeInTheDocument();
     });
 
     it("renders else content when previewCondition is true", () => {
@@ -24,9 +44,8 @@ describe("Unless Component", () => {
             conditionPath="user.isSubscribed"
             previewCondition={true}
             else={<div>Thank you for subscribing!</div>}
-          >
-            <div>Subscribe now!</div>
-          </Unless>
+            then={<div>Subscribe now!</div>}
+          />
         </RuntimeProvider>
       );
 
@@ -39,9 +58,11 @@ describe("Unless Component", () => {
     it("renders nothing if else is not provided and previewCondition is true", () => {
       const { container } = render(
         <RuntimeProvider value="preview">
-          <Unless conditionPath="user.isSubscribed" previewCondition={true}>
-            <div>Subscribe now!</div>
-          </Unless>
+          <Unless
+            conditionPath="user.isSubscribed"
+            previewCondition={true}
+            then={<div>Subscribe now!</div>}
+          />
         </RuntimeProvider>
       );
 
@@ -50,15 +71,14 @@ describe("Unless Component", () => {
   });
 
   describe("Build Mode", () => {
-    it("renders handlebars syntax with children content", () => {
+    it("renders handlebars syntax with then content", () => {
       const { container } = render(
         <RuntimeProvider value="build">
           <Unless
             conditionPath="user.isSubscribed"
             previewCondition={false} // Ignored in build mode
-          >
-            <div>Subscribe now!</div>
-          </Unless>
+            then={<div>Subscribe now!</div>}
+          />
         </RuntimeProvider>
       );
 
@@ -74,9 +94,8 @@ describe("Unless Component", () => {
             conditionPath="user.isSubscribed"
             previewCondition={false}
             else={<div>Thank you for subscribing!</div>}
-          >
-            <div>Subscribe now!</div>
-          </Unless>
+            then={<div>Subscribe now!</div>}
+          />
         </RuntimeProvider>
       );
 

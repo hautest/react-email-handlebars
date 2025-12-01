@@ -2,7 +2,8 @@ import { createContext, useContext, type Context } from "react";
 import { createRequire } from "module";
 
 export function createSafeContext<T>(contextName: string) {
-  let createContextFn: <TValue>(defaultValue: TValue) => Context<TValue> = createContext;
+  let createContextFn: <TValue>(defaultValue: TValue) => Context<TValue> =
+    createContext;
   let useContextFn: <TValue>(context: Context<TValue>) => TValue = useContext;
 
   // Try to use jsx-email's context functions if available
