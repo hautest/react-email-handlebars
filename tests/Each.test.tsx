@@ -16,6 +16,28 @@ const mockUsers: User[] = [
   { name: "Bob", email: "bob@example.com" },
 ];
 
+const NestedSchema = z.object({
+  id: z.string(),
+  info: z.object({
+    name: z.string(),
+    contact: z.object({
+      email: z.string(),
+    }),
+  }),
+});
+
+type NestedItem = z.infer<typeof NestedSchema>;
+
+const mockNestedItems: NestedItem[] = [
+  {
+    id: "1",
+    info: {
+      name: "Alice",
+      contact: { email: "alice@example.com" },
+    },
+  },
+];
+
 describe("Each Component", () => {
   describe("Preview Mode", () => {
     it("renders list of items based on previewData", () => {
@@ -54,6 +76,25 @@ describe("Each Component", () => {
 
       expect(screen.queryByTestId("user-item")).not.toBeInTheDocument();
     });
+
+    it("renders nested object properties correctly", () => {
+      render(
+        <RuntimeProvider value="preview">
+          <Each
+            each="users"
+            schema={NestedSchema}
+            previewData={mockNestedItems}
+            renderItem={(item) => (
+              <div>
+                {item.info.name} - {item.info.contact.email}
+              </div>
+            )}
+          />
+        </RuntimeProvider>
+      );
+
+      expect(screen.getByText("Alice - alice@example.com")).toBeInTheDocument();
+    });
   });
 
   describe("Build Mode", () => {
@@ -76,6 +117,27 @@ describe("Each Component", () => {
 
       expect(container.innerHTML).toBe(
         "{{#each users}}<div><span>Name: {{name}}</span><span>Email: {{email}}</span></div>{{/each}}"
+      );
+    });
+
+    it("renders handlebars syntax for nested properties", () => {
+      const { container } = render(
+        <RuntimeProvider value="build">
+          <Each
+            each="users"
+            schema={NestedSchema}
+            previewData={mockNestedItems}
+            renderItem={(item) => (
+              <div>
+                {item.info.name} - {item.info.contact.email}
+              </div>
+            )}
+          />
+        </RuntimeProvider>
+      );
+
+      expect(container.innerHTML).toBe(
+        "{{#each users}}<div>{{info.name}} - {{info.contact.email}}</div>{{/each}}"
       );
     });
 

@@ -2,19 +2,27 @@ import type { ReactNode } from "react";
 import z from "zod";
 import { useRuntime } from "../contexts/useRuntime";
 
-function createProxyFromSchema<T>(schema: z.ZodSchema<T>): T {
-  if (!(schema instanceof z.ZodObject)) {
+function createProxyFromSchema<T>(schema: z.ZodTypeAny, path: string = ""): T {
+  if (!path && !(schema instanceof z.ZodObject)) {
     throw new Error("Schema must be a ZodObject");
   }
 
-  const shape = schema.shape;
-  const proxyObject: Record<string, any> = {};
+  // Handle ZodObject recursively
+  if (schema instanceof z.ZodObject) {
+    const shape = schema.shape;
+    const proxyObject: Record<string, any> = {};
 
-  for (const key in shape) {
-    proxyObject[key] = `{{${key}}}`;
+    for (const key in shape) {
+      const newPath = path ? `${path}.${key}` : key;
+      proxyObject[key] = createProxyFromSchema(shape[key], newPath);
+    }
+
+    return proxyObject as T;
   }
 
-  return proxyObject as T;
+  // For primitive types (String, Number, Boolean, etc.), return the handlebars path string.
+  // If it's not an object, we assume it's a leaf node.
+  return `{{${path}}}` as T;
 }
 
 export interface EachProps<TItem extends object> {
@@ -66,7 +74,7 @@ export function Each<TItem extends object>({
   const runtime = useRuntime("Each");
 
   if (runtime === "build") {
-    const schemaProxy = createProxyFromSchema(schema);
+    const schemaProxy = createProxyFromSchema<TItem>(schema);
     const reactProxyNode = renderItem(schemaProxy);
     return (
       <>
